@@ -11,10 +11,15 @@ router.get('/', async (req, res) => {
   res.json(items);
 });
 
-router.get('/:item_id', async (req, res) => {
-  const { item_id } = req.params;
-  const item = await tasksService.get_one(item_id);
-  res.json(item);
+router.get('/:item_id', async (req, res, next) => {
+  try {
+    const { item_id } = req.params;
+    const item = await tasksService.get_one(item_id);
+    res.json(item);
+  } catch (error) {
+    next(error);
+  }
+
 });
 
 router.post('/', async (req, res) => {

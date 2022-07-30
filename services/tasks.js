@@ -24,15 +24,18 @@ class TaskService {
   }
 
   async get_all() {
-    return new Promise((resolve) =>{
-      setTimeout(()=>{
-        resolve(this.tasks)
-      }, 5000)
-    })
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.tasks);
+      }, 5000);
+    });
   }
 
   async get_one(item_id) {
     const task = this.tasks.find((item) => item.id === parseInt(item_id));
+    if (!task) {
+      throw new Error('Task not Found');
+    }
     return task;
   }
 

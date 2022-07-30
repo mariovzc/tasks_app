@@ -1,6 +1,7 @@
 import express from 'express';
 import db from './db.js';
 import routerApi from './routes/index.js';
+import {logErrors, errorHandler}  from "./middlewares/error_handler.js"
 
 db();
 
@@ -17,9 +18,10 @@ app.get('/', (_, res) => {
 
 routerApi(app);
 
-app.use(function (_, res) {
-  res.status(404).json({ error: 'Not found' });
-});
+// errors middleware MUST be after app routing
+// You MUST check the order
+app.use(logErrors)
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
