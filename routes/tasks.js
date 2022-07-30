@@ -27,13 +27,20 @@ router.get('/:item_id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const body = req.body;
+  const { body } = req;
 
   res.status(201).json({
-    message: "ok",
-    data: body
-  })
+    message: 'updated',
+    data: body,
+  });
+});
 
+router.patch('/:item_id', (req, res) => {
+  res.status(204).json();
+});
+
+router.delete('/:item_id', (req, res) => {
+  res.status(204).json();
 });
 
 export default router;
