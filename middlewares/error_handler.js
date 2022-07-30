@@ -4,13 +4,23 @@ function logErrors(err, req, res, next) {
   next(err);
 }
 
-
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
   res.status(500).json({
     message: err.message,
-    stack: err.stack
-  })
+    stack: err.stack,
+  });
 }
 
-export { logErrors, errorHandler };
+function boomErrorHandler(err, req, res, next) {
+  if (err.isBoom) {
+    const {
+      output: { statusCode, payload },
+    } = err;
+    res.status(statusCode).json(payload);
+  }
+
+  next(err);
+}
+
+export { logErrors, errorHandler, boomErrorHandler };

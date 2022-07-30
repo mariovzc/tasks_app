@@ -1,7 +1,7 @@
 import express from 'express';
 import db from './db.js';
 import routerApi from './routes/index.js';
-import {logErrors, errorHandler}  from "./middlewares/error_handler.js"
+import {logErrors, errorHandler, boomErrorHandler}  from "./middlewares/error_handler.js"
 
 db();
 
@@ -21,6 +21,7 @@ routerApi(app);
 // errors middleware MUST be after app routing
 // You MUST check the order
 app.use(logErrors)
+app.use(boomErrorHandler);
 app.use(errorHandler)
 
 app.listen(PORT, () => {
