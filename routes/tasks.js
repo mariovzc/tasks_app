@@ -6,21 +6,21 @@ const router = Router();
 
 const tasksService = new TaskService();
 
-router.get('/', (req, res) => {
-  const items = tasksService.get_all();
+router.get('/', async (req, res) => {
+  const items = await tasksService.get_all();
   res.json(items);
 });
 
-router.get('/:item_id', (req, res) => {
+router.get('/:item_id', async (req, res) => {
   const { item_id } = req.params;
-  const item = tasksService.get_one(item_id);
+  const item = await tasksService.get_one(item_id);
   res.json(item);
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { body } = req;
 
-  const task = tasksService.create(body);
+  const task = await tasksService.create(body);
 
   res.status(201).json({
     message: 'created',
@@ -31,17 +31,20 @@ router.post('/', (req, res) => {
   });
 });
 
-router.patch('/:item_id', (req, res) => {
-  const { item_id } = req.params;
-  const { body } = req;
-
-  tasksService.update(item_id, body);
-  res.status(204).json();
+router.patch('/:item_id', async (req, res) => {
+  try {
+    const { item_id } = req.params;
+    const { body } = req;
+    await tasksService.update(item_id, body);
+    res.status(204).json();
+  } catch (error) {
+    res.status(404).json({message: error.message})
+  }
 });
 
-router.delete('/:item_id', (req, res) => {
+router.delete('/:item_id', async (req, res) => {
   const { item_id } = req.params;
-  tasksService.delete(item_id);
+  await tasksService.delete(item_id);
 
   res.status(204).json();
 });

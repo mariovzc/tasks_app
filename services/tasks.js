@@ -13,7 +13,7 @@ class TaskService {
     }));
   }
 
-  create(data) {
+  async create(data) {
     const task = {
       ...data,
       id: this.tasks.length,
@@ -23,16 +23,20 @@ class TaskService {
     return task;
   }
 
-  get_all() {
-    return this.tasks;
+  async get_all() {
+    return new Promise((resolve) =>{
+      setTimeout(()=>{
+        resolve(this.tasks)
+      }, 5000)
+    })
   }
 
-  get_one(item_id) {
+  async get_one(item_id) {
     const task = this.tasks.find((item) => item.id === parseInt(item_id));
     return task;
   }
 
-  update(item_id, data) {
+  async update(item_id, data) {
     const index = this.tasks.findIndex((item) => item.id === parseInt(item_id));
     if (index === -1) {
       throw new Error('Task not found');
@@ -41,7 +45,7 @@ class TaskService {
     this.tasks[index] = { ...this.tasks[index], ...data };
   }
 
-  delete(item_id) {
+  async delete(item_id) {
     const index = this.tasks.findIndex((item) => item.id === parseInt(item_id));
     if (index === -1) {
       throw new Error('Task not found');
