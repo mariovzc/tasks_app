@@ -1,6 +1,12 @@
 import { Router } from 'express';
 
 import TaskService from '../services/tasks.js';
+import validatorHandler from '../middlewares/validator_handler.js';
+
+import {
+  createTaskSchema,
+  updateTaskSchema,
+} from '../schemas/products.js';
 
 const router = Router();
 
@@ -19,10 +25,9 @@ router.get('/:item_id', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 });
 
-router.post('/', async (req, res) => {
+router.post('/', validatorHandler(createTaskSchema, 'body'), async (req, res) => {
   const { body } = req;
 
   const task = await tasksService.create(body);
@@ -36,16 +41,20 @@ router.post('/', async (req, res) => {
   });
 });
 
-router.patch('/:item_id', async (req, res) => {
-  try {
-    const { item_id } = req.params;
-    const { body } = req;
-    await tasksService.update(item_id, body);
-    res.status(204).json();
-  } catch (error) {
-    res.status(404).json({message: error.message})
+router.patch(
+  '/:item_id',
+  validatorHandler(updateTaskSchema, 'body'),
+  async (req, res) => {
+    try {
+      const { item_id } = req.params;
+      const { body } = req;
+      await tasksService.update(item_id, body);
+      res.status(204).json();
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   }
-});
+);
 
 router.delete('/:item_id', async (req, res) => {
   const { item_id } = req.params;

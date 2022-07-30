@@ -1,22 +1,18 @@
-import { bool, object, string } from 'joi';
+import Joi from 'joi';
 
-const id = string();
-const name = string();
-const done = bool();
-const end_date = string().isoDate();
+const name = Joi.string().min(3);
+const done = Joi.boolean();
+const end_date = Joi.string().isoDate();
 
-const createTaskSchema = object({
+const createTaskSchema = Joi.object({
   name: name.required(),
   end_date: end_date.required(),
 });
 
-const updateTaskSchema = object({
+const updateTaskSchema = Joi.object({
   done,
   end_date,
 });
 
-const getTaskSchema = object({
-  id: id.required(),
-});
 
-export { createTaskSchema, updateTaskSchema, getTaskSchema };
+export { createTaskSchema, updateTaskSchema };
