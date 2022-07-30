@@ -7,7 +7,9 @@ db();
 const app = express();
 const PORT = process.env.PORT ?? 8000;
 
-app.get('/', (req, res) => {
+app.use(express.json());
+
+app.get('/', (_, res) => {
   res.json({
     api: 'ok',
   });
