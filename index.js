@@ -2,11 +2,16 @@ import express from 'express';
 import db from './db.js';
 import routerApi from './routes/index.js';
 import {logErrors, errorHandler, boomErrorHandler}  from "./middlewares/error_handler.js"
+import morgan from 'morgan';
 
 db();
 
 const app = express();
 const PORT = process.env.PORT ?? 8000;
+
+app.use(morgan('dev', {
+  skip: function (req, res) { return res.statusCode < 400 }
+}))
 
 app.use(express.json());
 
