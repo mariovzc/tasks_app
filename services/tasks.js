@@ -29,7 +29,7 @@ class TaskService {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(this.tasks);
-      }, 5000);
+      }, 2000);
     });
   }
 
