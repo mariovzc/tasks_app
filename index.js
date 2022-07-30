@@ -5,7 +5,7 @@ import routerApi from './routes/index.js';
 db();
 
 const app = express();
-const PORT = process.env.PORT ?? 3000;
+const PORT = process.env.PORT ?? 8000;
 
 app.get('/', (req, res) => {
   res.json({
@@ -15,7 +15,9 @@ app.get('/', (req, res) => {
 
 routerApi(app);
 
-
+app.use(function (_, res) {
+  res.status(404).json({ error: 'Not found' });
+});
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
