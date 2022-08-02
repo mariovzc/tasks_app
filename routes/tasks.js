@@ -8,12 +8,13 @@ import {
   updateTaskSchema,
   getTaskSchema,
 } from '../schemas/tasks.js';
+import { checkApiKey } from '../middlewares/auth_handler.js';
 
 const router = Router();
 
 const tasksService = new TaskService();
 
-router.get('/', async (req, res) => {
+router.get('/', checkApiKey, async (req, res) => {
   const items = await tasksService.get_all();
   res.json(items);
 });
