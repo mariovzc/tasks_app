@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 
-FROM node:current-alpine3.14
+FROM node:alpine3.16
 
 WORKDIR /app
 
 COPY ["package.json", "package-lock.json*", "./"]
 
-RUN npm i -g nodemon
+RUN apk add --no-cache python3 g++ make
 
-RUN npm install
+RUN yarn
 
 COPY . .
 
