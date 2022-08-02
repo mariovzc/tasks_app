@@ -1,5 +1,8 @@
-import { model, Schema } from 'mongoose';
-import DateHelper from '../utils/date_helper';
+import mongoose from 'mongoose';
+import DateHelper from '../utils/date_helper.js';
+
+
+const { model, Schema } = mongoose
 
 const date_conf = { type: String, default: DateHelper.now_toISOString };
 
@@ -10,7 +13,7 @@ const TaskSchema = new Schema({
     type: Map,
     of: String
   },
-  status: String,
+  status: {type: String, default: "pending"},
   module: String,
   end_date: String,
   created_at: date_conf,

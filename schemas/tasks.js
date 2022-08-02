@@ -1,5 +1,9 @@
 import Joi from 'joi';
+import joiObjectid from 'joi-objectid';
 
+Joi.objectId = joiObjectid(Joi);
+
+const item_id = Joi.objectId();
 const name = Joi.string().min(3);
 const desc = Joi.string();
 const assigned = Joi.object();
@@ -17,7 +21,11 @@ const createTaskSchema = Joi.object({
 
 const updateTaskSchema = Joi.object({
   end_date,
-  status
+  status,
 });
 
-export { createTaskSchema, updateTaskSchema };
+const getTaskSchema = Joi.object({
+  item_id: item_id.required(),
+});
+
+export { createTaskSchema, updateTaskSchema, getTaskSchema };
