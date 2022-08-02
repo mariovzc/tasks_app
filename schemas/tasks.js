@@ -1,10 +1,10 @@
 import Joi from 'joi';
 
 const name = Joi.string().min(3);
-const desc = Joi.String();
+const desc = Joi.string();
 const assigned = Joi.object();
-const status = Joi.String().valid('pending', 'done', 'canceled');
-const module = Joi.String();
+const status = Joi.string().valid('pending', 'done', 'canceled');
+const module = Joi.string();
 const end_date = Joi.string().isoDate();
 
 const createTaskSchema = Joi.object({
