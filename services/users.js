@@ -1,4 +1,4 @@
-import { internal, notFound } from '@hapi/boom';
+import { conflict, internal, notFound } from '@hapi/boom';
 import User from '../models/user.js';
 import Pagination from '../utils/pagination.js';
 import bycript from 'bcrypt';
@@ -18,7 +18,7 @@ class UserService {
   }
 
   async #get_by_email(email) {
-    const item = await User.findOne({email});
+    const item = await User.findOne({ email });
     if (!item) {
       throw notFound('User not Found');
     }
@@ -26,6 +26,11 @@ class UserService {
   }
 
   async create(data) {
+    const { email } = data;
+    const user = await this.#get_by_email(email);
+    if (user) {
+      throw conflict('User Already exists');
+    }
     try {
       const password = await bycript.hash(data.password, 10);
       const item = await User.create({ ...data, password });
