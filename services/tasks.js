@@ -24,8 +24,8 @@ class TaskService {
   }
 
   async create(data) {
-    const item = new Task({ ...data });
     try {
+      const item = await Task.create({ ...data });
       item.save();
       return item;
     } catch (error) {
@@ -34,11 +34,9 @@ class TaskService {
   }
 
   async get_all(page = 1, limit = 10) {
-    const offset = (page - 1) * limit + 1 - 1;
-    const pagination = await Pagination(Task, page, limit);
-    const tasks = await Task.find().skip(offset).limit(limit);
+    const [result, pagination] = await Pagination(Task, page, limit);
     return {
-      data: tasks.map(this.#to_json),
+      data: result.map(this.#to_json),
       pagination,
     };
   }
