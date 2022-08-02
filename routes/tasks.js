@@ -6,7 +6,7 @@ import validatorHandler from '../middlewares/validator_handler.js';
 import {
   createTaskSchema,
   updateTaskSchema,
-} from '../schemas/products.js';
+} from '../schemas/tasks.js';
 
 const router = Router();
 

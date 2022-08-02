@@ -10,10 +10,8 @@ const Task = new Schema({
     type: Map,
     of: String
   },
-  comments: [{ body: String, date: date_conf }],
   status: String,
   module: String,
-  private: { type: Boolean, default: false },
   end_date: String,
   created_at: date_conf,
   updated_at: date_conf,
