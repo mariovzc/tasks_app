@@ -1,4 +1,4 @@
-import { conflict, internal, notFound } from '@hapi/boom';
+import { conflict, internal, notFound, unauthorized } from '@hapi/boom';
 import User from '../models/user.js';
 import Pagination from '../utils/pagination.js';
 import bycript from 'bcrypt';
@@ -23,6 +23,17 @@ class UserService {
       throw notFound('User not Found');
     }
     return item;
+  }
+
+  async login(email, password) {
+    const item = await this.#get_by_email(email);
+
+    const isMatch = await bycript.compare(password, item.password);
+    if (!isMatch) {
+      throw unauthorized();
+    }
+
+    return this.#to_json(item);
   }
 
   async create(data) {

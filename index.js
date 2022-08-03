@@ -9,6 +9,10 @@ db();
 const app = express();
 const PORT = process.env.PORT ?? 8000;
 
+import initStrategies from "./utils/auth/index.js"
+
+initStrategies()
+
 app.use(morgan('dev', {
   skip: function (req, res) { return res.statusCode < 400 }
 }))
