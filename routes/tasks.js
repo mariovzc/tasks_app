@@ -9,6 +9,7 @@ import {
   getTaskSchema,
 } from '../schemas/tasks.js';
 import { checkApiKey } from '../middlewares/auth_handler.js';
+import passport from 'passport';
 
 const router = Router();
 
@@ -35,19 +36,25 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createTaskSchema, 'body'),
-  async (req, res) => {
-    const { body } = req;
+  async (req, res, next) => {
+    try {
+      console.log(req.payload)
+      const { body } = req;
 
-    const task = await tasksService.create(body);
+      const task = await tasksService.create(body);
 
-    res.status(201).json({
-      message: 'created',
-      data: {
-        id: task.id,
-        resource: `/tasks/${task.id}`,
-      },
-    });
+      res.status(201).json({
+        message: 'created',
+        data: {
+          id: task.id,
+          resource: `/tasks/${task.id}`,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
@@ -55,14 +62,14 @@ router.patch(
   '/:item_id',
   validatorHandler(getTaskSchema, 'params'),
   validatorHandler(updateTaskSchema, 'body'),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const { item_id } = req.params;
       const { body } = req;
       await tasksService.update(item_id, body);
       res.status(204).json();
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      next(error)
     }
   }
 );
@@ -70,14 +77,14 @@ router.patch(
 router.delete(
   '/:item_id',
   validatorHandler(getTaskSchema, 'params'),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const { item_id } = req.params;
       await tasksService.delete(item_id);
 
       res.status(204).json();
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      next(error)
     }
   }
 );
