@@ -18,6 +18,7 @@ const TaskSchema = new Schema(
     end_date: String,
     created_at: date_conf,
     updated_at: date_conf,
+    creator: String,
   },
   { versionKey: false }
 );
