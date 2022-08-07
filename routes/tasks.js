@@ -8,17 +8,22 @@ import {
   updateTaskSchema,
   getTaskSchema,
 } from '../schemas/tasks.js';
-import { checkApiKey } from '../middlewares/auth_handler.js';
-import passport from 'passport';
 
 const router = Router();
 
 const tasksService = new TaskService();
 
-router.get('/', checkApiKey, async (req, res) => {
+router.get('/', async (req, res) => {
   const items = await tasksService.get_all();
   res.json(items);
 });
+
+// TODO: crear router for /me
+router.get("/me", async(req, res) => {
+  const {user: {sub:id}} = req;
+  const items = await tasksService.get_mines(id);
+  res.json(items);
+})
 
 router.get(
   '/:item_id',
@@ -36,15 +41,12 @@ router.get(
 
 router.post(
   '/',
-  passport.authenticate('jwt', { session: false }),
   validatorHandler(createTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      console.log(req.payload)
       const { body } = req;
-
+      body["creator"] = req.user.sub
       const task = await tasksService.create(body);
-
       res.status(201).json({
         message: 'created',
         data: {
@@ -64,24 +66,8 @@ router.patch(
   validatorHandler(updateTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { item_id } = req.params;
-      const { body } = req;
-      await tasksService.update(item_id, body);
-      res.status(204).json();
-    } catch (error) {
-      next(error)
-    }
-  }
-);
-
-router.delete(
-  '/:item_id',
-  validatorHandler(getTaskSchema, 'params'),
-  async (req, res, next) => {
-    try {
-      const { item_id } = req.params;
-      await tasksService.delete(item_id);
-
+      const {user, body, params: {item_id}} = req;
+      await tasksService.update(item_id, body, user.sub);
       res.status(204).json();
     } catch (error) {
       next(error)

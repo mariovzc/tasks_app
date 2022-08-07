@@ -1,4 +1,4 @@
-import { conflict, internal, notFound } from '@hapi/boom';
+import { conflict, forbidden, internal, notFound } from '@hapi/boom';
 import Task from '../models/task.js';
 import Pagination from '../utils/pagination.js';
 class TaskService {
@@ -49,8 +49,14 @@ class TaskService {
     return this.#to_json(task);
   }
 
-  async update(item_id, data) {
+  async update(item_id, data, user_id) {
+    // TODO refactorizar todo esto ya que esta funcion hace dos cosas
+
     const task = await this.#get_by_id(item_id);
+    const {requester} = task;
+    if (requester.user && requester.user != user){
+      throw forbidden("You cant edit others tasks")
+    }
     if (['done', 'canceled'].includes(task.status)) {
       throw conflict(`task status is ${task.status}`);
     }
@@ -61,14 +67,17 @@ class TaskService {
     }
   }
 
-  async delete(item_id) {
-    const task = await this.#get_by_id(item_id);
-    try {
-      await task.delete();
-    } catch (error) {
-      throw internal(error);
+  async get_mines(user_id, page = 1, limit = 10){
+    const filters = {
+      'assigned.user': user_id
     }
+    const [result, pagination] = await Pagination(Task, page, limit, filters);
+    return {
+      data: result.map(this.#to_json),
+      pagination,
+    };
   }
+
 }
 
 export default TaskService;
