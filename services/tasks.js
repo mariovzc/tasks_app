@@ -3,16 +3,17 @@ import Task from '../models/task.js';
 import Pagination from '../utils/pagination.js';
 class TaskService {
   #to_json(item) {
-    const obj = item.toObject();
-    const { _id: id, desc = '' } = obj;
+    const obj = item.toJSON();
+
+    const {_id: id , desc = '' } = obj;
     delete obj['_id'];
-    delete obj['__v'];
 
     return {
       ...obj,
       id,
       desc,
     };
+
   }
 
   async #get_by_id(item_id) {
@@ -26,8 +27,9 @@ class TaskService {
   async create(data) {
     try {
       const item = await Task.create({ ...data });
-      item.save();
-      return item;
+      console.log(item.assigned);
+     //item.save();
+      return {id: 1};
     } catch (error) {
       throw internal(error);
     }

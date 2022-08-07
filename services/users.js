@@ -5,11 +5,9 @@ import bycript from 'bcrypt';
 
 class UserService {
   #to_json(item) {
-    const obj = item.toObject();
+    const obj = item.toJSON();
     const { _id: id } = obj;
     delete obj['_id'];
-    delete obj['__v'];
-    delete obj['password'];
 
     return {
       ...obj,
