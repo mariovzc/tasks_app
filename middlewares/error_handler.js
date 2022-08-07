@@ -18,6 +18,7 @@ function boomErrorHandler(err, req, res, next) {
       output: { statusCode, payload },
     } = err;
     res.status(statusCode).json(payload);
+    return next()
   }
 
   next(err);
